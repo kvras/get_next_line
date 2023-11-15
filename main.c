@@ -2,6 +2,14 @@
 
 int main()
 {
-    int fd = open("file.txt", O_RDONLY);
-    printf("%s",get_next_line(fd));
+    int i = 3;
+    char *str;
+    int fd = open("test.txt", O_RDONLY);
+    str = get_next_line(fd);
+    printf("%s",str);
+    free(str);
+    str = get_next_line(fd);
+    printf("%s",str);
+    free(str);
+    close(fd);
 }

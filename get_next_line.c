@@ -12,39 +12,45 @@
 
 #include "get_next_line.h"
 
-int	f(char **b)
+static int	f(char **b)
 {
 	char	*ptr;
 	int		i;
 
 	if (!(*b))
+	{
 		*b = (char *)malloc(BUFFER_SIZE + 1);
+		bzero(*b, BUFFER_SIZE);
+	}
 	else
 	{
 		i = 0;
 		ptr = (char *)malloc(BUFFER_SIZE + ft_strlen(*b) + 1);
-		while (*b[i])
+		while ((*b)[i])
 		{
-			ptr[i] = *b[i];
+			ptr[i] = (*b)[i];
 			i++;
 		}
+		bzero(ptr + i, BUFFER_SIZE);
 		free(*b);
 		*b = ptr;
 	}
-	if(*b)
+	if (*b)
 		return (1);
 	return (0);
 }
 
-char	*line(char *b, int start, int len)
+static char	*line(char **b, int start, int len)
 {
 	char	*str;
 	char	*ptr;
 
-	str = ft_substr(b, start, len + 1);
-	ptr = ft_substr(b, len, ft_strlen(b + len));
-	free(b);
-	b = ptr;
+	ptr = NULL;
+	str = ft_substr(*b, start, len);
+	if (len < ft_strlen(*b))
+		ptr = ft_substr(*b, len, ft_strlen(*b + len));
+	free(*b);
+	*b = ptr;
 	return (str);
 }
 
@@ -52,22 +58,24 @@ char	*get_next_line(int fd)
 {
 	int			i;
 	static char	*b;
-
 	if (fd < 0 || read(fd, 0, 0) < 0 || BUFFER_SIZE < 1)
 		return (NULL);
-	i = 0;
-	while (f(&b) && read(fd, b + i, BUFFER_SIZE) == BUFFER_SIZE)
+	i = (b && *b) ? ft_strlen(b) : 0;
+	while (f(&b) && read(fd, b + i, BUFFER_SIZE) > 0)
 	{
+		b[ft_strlen(b)] = '\0';
 		i = 0;
 		while (b[i])
 		{
 			if (b[i] == '\n')
-				return (line(b, 0, i + 1));
+				return (line(&b, 0, i + 1));
 			i++;
 		}
 	}
-	i = ft_strlen((const char *)b) - 1;
-	if (b[0])
-		return (line(b, 0, i + 1));
+	if (b && *b)
+	{
+		i = ft_strlen(b) - 1;
+		return (line(&b, 0, i + 1));
+	}
 	return (NULL);
 }

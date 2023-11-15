@@ -1,1 +1,6 @@
-cc salam
+In the context of the get_next_line function you've shared earlier,
+this behavior is expected when there are no more characters left to read from the file.
+If the read function is consistently returning 0,
+In the context of the get_next_line function you've shared earlier,
+this behavior is expected when there are no more characters left to read from the file.
+If the read funcion is consistently returning 0,
