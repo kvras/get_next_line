@@ -17,12 +17,14 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <string.h>
-#define BUFFER_SIZE 2
+#ifndef BUFFER_SIZE
+# define BUFFER_SIZE 1
+#endif
 
+char	*get_next_line(int fd);
 char	*ft_strdup(const char *str);
 char	*ft_substr(const char *str, unsigned int start, size_t len);
 void	*ft_memcpy(void *dst, const void *src, size_t len);
-char	*get_next_line(int fd);
-size_t	ft_strlen(const char *s);
-
+size_t  ft_strlen(const char *s);
+void	*ft_memset(void *str, int c, size_t len);
 #endif

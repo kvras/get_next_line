@@ -12,7 +12,23 @@
 
 #include "get_next_line.h"
 
-static int	f(char **b)
+void	*ft_memset(void *str, int c, size_t len)
+{
+	size_t			i;
+	void			*str2;
+
+	i = 0;
+	str2 = str;
+	while (i < len)
+	{
+		*((char *)str2) = c;
+		str2++;
+		i++;
+	}
+	return (str);
+}
+
+int	f(char **b)
 {
 	char	*ptr;
 	int		i;
@@ -20,18 +36,26 @@ static int	f(char **b)
 	if (!(*b))
 	{
 		*b = (char *)malloc(BUFFER_SIZE + 1);
-		bzero(*b, BUFFER_SIZE);
+		if(!(*b))
+			return (0);
+		ft_memset(*b, 0, BUFFER_SIZE + 1);
 	}
 	else
 	{
 		i = 0;
 		ptr = (char *)malloc(BUFFER_SIZE + ft_strlen(*b) + 1);
+		if (!ptr)
+		{
+			free(*b);
+			*b = NULL;
+			return (0);
+		}
 		while ((*b)[i])
 		{
 			ptr[i] = (*b)[i];
 			i++;
 		}
-		bzero(ptr + i, BUFFER_SIZE);
+		ft_memset(ptr + i, 0, BUFFER_SIZE + 1);
 		free(*b);
 		*b = ptr;
 	}
@@ -40,30 +64,56 @@ static int	f(char **b)
 	return (0);
 }
 
-static char	*line(char **b, int start, int len)
+char	*line(char **b, int start, size_t len)
 {
 	char	*str;
 	char	*ptr;
 
-	ptr = NULL;
 	str = ft_substr(*b, start, len);
+	if (!str)
+	{
+		free(*b);
+		*b = NULL;
+		return (NULL);
+	}
 	if (len < ft_strlen(*b))
+	{
 		ptr = ft_substr(*b, len, ft_strlen(*b + len));
-	free(*b);
-	*b = ptr;
+		if (!ptr)
+		{
+					free(*b);
+		*b = NULL;
+			free(str);
+			return (NULL);
+		}
+		free(*b);
+		*b = ptr;
+	}
+	else
+	{
+		free(*b);
+		*b = NULL;
+	}
 	return (str);
 }
 
 char	*get_next_line(int fd)
 {
 	int			i;
-	static char	*b;
-	if (fd < 0 || read(fd, 0, 0) < 0 || BUFFER_SIZE < 1)
+	static char	*b = NULL;
+
+	if (fd < 0 || BUFFER_SIZE < 1)
 		return (NULL);
-	i = (b && *b) ? ft_strlen(b) : 0;
-	while (f(&b) && read(fd, b + i, BUFFER_SIZE) > 0)
+	i = b ? ft_strlen(b) : 0;
+	int readV = 0;
+	while (f(&b) && (readV = read(fd, b + i, BUFFER_SIZE)))
 	{
-		b[ft_strlen(b)] = '\0';
+		if (readV < 0)
+		{
+			free(b);
+			b = NULL;
+			break ;
+		}
 		i = 0;
 		while (b[i])
 		{
@@ -72,10 +122,18 @@ char	*get_next_line(int fd)
 			i++;
 		}
 	}
-	if (b && *b)
+	if (b)
 	{
+		i = 0;
+		while (b[i])
+		{
+			if (b[i] == '\n')
+				return (line(&b, 0, i + 1));
+			i++;
+		}
 		i = ft_strlen(b) - 1;
 		return (line(&b, 0, i + 1));
 	}
+	free(b);
 	return (NULL);
 }

@@ -1,6 +1,16 @@
-In the context of the get_next_line function you've shared earlier,
-this behavior is expected when there are no more characters left to read from the file.
-If the read function is consistently returning 0,
-In the context of the get_next_line function you've shared earlier,
-this behavior is expected when there are no more characters left to read from the file.
-If the read funcion is consistently returning 0,
+Dans la fonction printf en langage C, %x et %X sont des 
+spécificateurs de format utilisés pour imprimer 
+des valeurs en hexadécimal. Ils sont utilisés pour représenter 
+des nombres en base 16, mais diffèrent dans la façon 
+dont les chiffres hexadécimaux sont affichés.
+
+
+%x : Affiche les nombres en format hexadécimal en utilisant des 
+chiffres de 0 à 9 et des lettres minuscules de 'a' à 'f' 
+pour représenter les valeurs de 10 à 15, respectivement. Par exemple, 
+le nombre décimal 15 sera affiché comme f avec %x.
+
+%X : Semblable à %x, il affiche les nombres en format hexadécimal, mais
+ utilise des lettres majuscules ('A' à 'F')
+ au lieu de minuscules pour représenter les valeurs de 10 à 15. Par exemple, 
+ le nombre décimal 15 sera affiché comme F avec %X.
