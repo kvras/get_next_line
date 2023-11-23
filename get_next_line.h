@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miguiji <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: miguiji <miguiji@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/14 09:44:24 by miguiji           #+#    #+#             */
-/*   Updated: 2023/11/14 09:44:29 by miguiji          ###   ########.fr       */
+/*   Updated: 2023/11/23 23:25:22 by miguiji          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,8 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <fcntl.h>
-#include <string.h>
 #ifndef BUFFER_SIZE
-# define BUFFER_SIZE 1
+# define BUFFER_SIZE 1337
 #endif
 
 char	*get_next_line(int fd);

@@ -3,137 +3,123 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miguiji <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: miguiji <miguiji@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/11 17:41:05 by miguiji           #+#    #+#             */
-/*   Updated: 2023/11/13 17:41:57 by miguiji          ###   ########.fr       */
+/*   Created: 2023/11/21 19:01:07 by miguiji           #+#    #+#             */
+/*   Updated: 2023/11/23 23:22:20 by miguiji          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+#include <stdio.h>
 
-void	*ft_memset(void *str, int c, size_t len)
-{
-	size_t			i;
-	void			*str2;
+// chfree_function(char **buffer)
+// {
+// 	free(*buffer);
+// 	*buffer = NULL;
+// 	return NULL;
+// }
 
-	i = 0;
-	str2 = str;
-	while (i < len)
-	{
-		*((char *)str2) = c;
-		str2++;
-		i++;
-	}
-	return (str);
-}
-
-int	f(char **b)
+int	allocation(char **buffer)
 {
 	char	*ptr;
 	int		i;
 
-	if (!(*b))
+	if (!(*buffer))
 	{
-		*b = (char *)malloc(BUFFER_SIZE + 1);
-		if(!(*b))
+		*buffer = (char *)malloc(BUFFER_SIZE + 1);
+		if (!(*buffer))
 			return (0);
-		ft_memset(*b, 0, BUFFER_SIZE + 1);
-	}
-	else
-	{
-		i = 0;
-		ptr = (char *)malloc(BUFFER_SIZE + ft_strlen(*b) + 1);
-		if (!ptr)
-		{
-			free(*b);
-			*b = NULL;
-			return (0);
-		}
-		while ((*b)[i])
-		{
-			ptr[i] = (*b)[i];
-			i++;
-		}
-		ft_memset(ptr + i, 0, BUFFER_SIZE + 1);
-		free(*b);
-		*b = ptr;
-	}
-	if (*b)
+		ft_memset(*buffer, 0, BUFFER_SIZE + 1);
 		return (1);
-	return (0);
+	}
+	i = 0;
+	ptr = (char *)malloc(BUFFER_SIZE + ft_strlen(*buffer) + 1);
+	if (!ptr)
+		return (free(*buffer), *buffer = NULL, 0);
+	while ((*buffer)[i])
+	{
+		ptr[i] = (*buffer)[i];
+		i++;
+	}
+	ft_memset(ptr + i, 0, BUFFER_SIZE + 1);
+	free(*buffer);
+	*buffer = ptr;
+	return (1);
 }
 
-char	*line(char **b, int start, size_t len)
+char	*return_line(char **buffer, size_t len)
 {
 	char	*str;
-	char	*ptr;
+	char	*new_buffer;
+	size_t	i;
 
-	str = ft_substr(*b, start, len);
-	if (!str)
-	{
-		free(*b);
-		*b = NULL;
+	if (*buffer == NULL)
 		return (NULL);
-	}
-	if (len < ft_strlen(*b))
+	i = ft_strlen((const char *)*buffer);
+	new_buffer = NULL;
+	str = ft_substr((const char *)*buffer, 0, len);
+	if (!str)
+		return (free(*buffer), *buffer = NULL, NULL);
+	if (len < i)
 	{
-		ptr = ft_substr(*b, len, ft_strlen(*b + len));
-		if (!ptr)
-		{
-					free(*b);
-		*b = NULL;
-			free(str);
-			return (NULL);
-		}
-		free(*b);
-		*b = ptr;
+		new_buffer = ft_substr((const char *)*buffer, len, i - len);
+		if (!new_buffer)
+			return (free(str), free(*buffer), *buffer = NULL, NULL);
+		free(*buffer);
+		*buffer = new_buffer;
 	}
 	else
 	{
-		free(*b);
-		*b = NULL;
+		free(*buffer);
+		*buffer = NULL;
 	}
 	return (str);
 }
 
+static char	*read_wrp(char **buffer, int fd)
+{
+	int	i;
+
+	i = 0;
+	while (allocation(buffer))
+	{
+		if (read(fd, *buffer + ft_strlen(*buffer), BUFFER_SIZE) > 0)
+		{
+			while ((*buffer)[i])
+			{
+				if ((*buffer)[i] == '\n')
+					return (return_line(buffer, ++i));
+				i++;
+			}
+			continue ;
+		}
+		break ;
+	}
+	while (*buffer && (*buffer)[i])
+	{
+		if ((*buffer)[i] == '\n')
+			return (return_line(buffer, i + 1));
+		i++;
+	}
+	return (return_line(buffer, i));
+}
+
 char	*get_next_line(int fd)
 {
+	static char	*buffer;
 	int			i;
-	static char	*b = NULL;
+	char		*line;
 
-	if (fd < 0 || BUFFER_SIZE < 1)
+	i = 0;
+	if (fd < 0 || BUFFER_SIZE < 1 || read(fd, buffer, 0) < 0)
+	{
+		if (buffer)
+			return (free(buffer), buffer = NULL, NULL);
 		return (NULL);
-	i = b ? ft_strlen(b) : 0;
-	int readV = 0;
-	while (f(&b) && (readV = read(fd, b + i, BUFFER_SIZE)))
-	{
-		if (readV < 0)
-		{
-			free(b);
-			b = NULL;
-			break ;
-		}
-		i = 0;
-		while (b[i])
-		{
-			if (b[i] == '\n')
-				return (line(&b, 0, i + 1));
-			i++;
-		}
 	}
-	if (b)
-	{
-		i = 0;
-		while (b[i])
-		{
-			if (b[i] == '\n')
-				return (line(&b, 0, i + 1));
-			i++;
-		}
-		i = ft_strlen(b) - 1;
-		return (line(&b, 0, i + 1));
-	}
-	free(b);
-	return (NULL);
+	line = read_wrp(&buffer, fd);
+	if (!line)
+		return (0);
+	return (line);
 }
