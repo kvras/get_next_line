@@ -6,21 +6,13 @@
 /*   By: miguiji <miguiji@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/21 19:01:07 by miguiji           #+#    #+#             */
-/*   Updated: 2023/11/23 23:22:20 by miguiji          ###   ########.fr       */
+/*   Updated: 2023/11/24 14:50:57 by miguiji          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <stdio.h>
 
-// chfree_function(char **buffer)
-// {
-// 	free(*buffer);
-// 	*buffer = NULL;
-// 	return NULL;
-// }
-
-int	allocation(char **buffer)
+static int	allocation(char **buffer)
 {
 	char	*ptr;
 	int		i;
@@ -48,7 +40,7 @@ int	allocation(char **buffer)
 	return (1);
 }
 
-char	*return_line(char **buffer, size_t len)
+static char	*return_line(char **buffer, size_t len)
 {
 	char	*str;
 	char	*new_buffer;

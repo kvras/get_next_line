@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line_utils.c                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: miguiji <miguiji@student.1337.ma>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/11/24 14:26:28 by miguiji           #+#    #+#             */
+/*   Updated: 2023/11/24 14:26:40 by miguiji          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "get_next_line.h"
 
 void	*ft_memset(void *str, int c, size_t len)
@@ -23,7 +35,6 @@ void	*ft_memcpy(void *dst, const void *src, size_t len)
 
 	if (!dst && !src)
 		return (NULL);
-
 	i = 0;
 	ptr = (unsigned char *)dst;
 	while (i < len)
@@ -81,6 +92,5 @@ char	*ft_substr(const char *str, unsigned int start, size_t len)
 		i++;
 	}
 	ptr[i] = '\0';
-	//printf("%s", ptr);
 	return (ptr);
 }
